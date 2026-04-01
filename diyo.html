@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="ne">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>शुभारंभ समारोह | दीप प्रज्वलन</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Yatra+One&family=Tiro+Devanagari+Hindi:ital@0;1&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1"></script>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    /* ── Diya specific styles ── */
+    .diya-stage {
+      background: radial-gradient(ellipse at 50% 30%, #3d1a06 0%, #1a0a02 55%, #0d0502 100%);
+      border: 2px solid rgba(200,152,42,0.3);
+      border-radius: 24px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.55), inset 0 1px 0 rgba(200,152,42,0.15);
+      transition: box-shadow 0.6s ease;
+      min-height: 340px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      padding: 2.5rem;
+    }
+    .diya-stage.lit-glow {
+      box-shadow:
+        0 0 40px rgba(255,130,0,0.5),
+        0 0 100px rgba(255,80,0,0.25),
+        0 20px 60px rgba(0,0,0,0.55),
+        inset 0 1px 0 rgba(200,152,42,0.25);
+    }
+    .diya-svg { overflow: visible; }
+
+    /* Flame */
+    #flameGroup {
+      opacity: 0;
+      transition: opacity 0.5s ease;
+      transform-origin: 120px 130px;
+    }
+    #flameGroup.burning { opacity: 1; }
+    @keyframes flicker {
+      0%,100% { transform: scaleX(1)   scaleY(1)   translateX(0); }
+      25%      { transform: scaleX(0.9) scaleY(1.06) translateX(-1px); }
+      50%      { transform: scaleX(1.05) scaleY(0.97) translateX(1px); }
+      75%      { transform: scaleX(0.95) scaleY(1.04) translateX(-1px); }
+    }
+    #flameGroup.burning { animation: flicker 1.8s ease-in-out infinite; }
+
+    /* Ambient glow ring */
+    #glowRing { opacity: 0; transition: opacity 0.6s ease; }
+    #glowRing.active { opacity: 1; }
+
+    /* Matchstick */
+    .matchstick-img {
+      width: 85px; height: auto;
+      cursor: grab;
+      transition: transform 0.2s ease, filter 0.3s ease;
+      filter: drop-shadow(0 4px 8px rgba(74,14,14,0.3));
+      user-select: none;
+    }
+    .matchstick-img:active { cursor: grabbing; transform: scale(0.93); }
+    .matchstick-img.dragging { opacity: 0.65; transform: scale(0.9); }
+    .matchstick-img.lit { filter: drop-shadow(0 0 10px #ff6600); }
+
+    /* Drop zone pulse */
+    .diya-stage.drop-active {
+      animation: dropPulse 0.7s ease infinite;
+    }
+    @keyframes dropPulse {
+      0%,100% { transform: scale(1); }
+      50%      { transform: scale(1.01); box-shadow: 0 0 50px rgba(255,120,0,0.6), 0 20px 60px rgba(0,0,0,0.5); }
+    }
+
+    .matchstick-panel {
+      background: var(--warm-white);
+      border: 1px solid rgba(200,152,42,0.3);
+      border-radius: 20px;
+      box-shadow: 0 8px 30px var(--shadow-warm);
+      padding: 2rem;
+    }
+
+    #diyaStatus {
+      color: rgba(220,180,100,0.85);
+      font-family: 'Tiro Devanagari Hindi', serif;
+      font-size: 1rem;
+      letter-spacing: 0.03em;
+      text-align: center;
+    }
+    #diyaStatus.lit { color: var(--gold-light); text-shadow: 0 0 12px rgba(255,180,0,0.5); }
+
+    #completionMessage {
+      font-family: 'Yatra One', serif;
+      color: var(--deep-maroon);
+      font-size: 1.25rem;
+    }
+
+    /* Touch support hint */
+    .touch-hint { font-size: 0.8rem; color: var(--text-muted); font-style: italic; }
+  </style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg sticky-top">
+  <div class="container">
+    <a class="navbar-brand" href="index.html">
+      <i class="bi bi-brightness-alt-high"></i> शुभारंभ समारोह
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="index.html"><i class="bi bi-scissors"></i> फिता काट्ने</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="sponsor.html"><i class="bi bi-trophy-fill"></i> प्रायोजकहरू</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" href="diyo.html"><i class="bi bi-brightness-alt-high"></i> दीप प्रज्वलन</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Main -->
+<main class="container py-5">
+
+  <!-- Header -->
+  <div class="text-center mb-4" data-animate>
+    <div class="deco-symbol mb-2">🪔</div>
+    <h1 class="ceremony-title">पवित्र दीप प्रज्वलन</h1>
+    <p class="ceremony-subtitle mt-2">
+      समृद्धिको ज्योति जलाउन <strong>सलाई</strong> तानेर दियोमाथि छाड्नुहोस्
+    </p>
+    <div class="gold-underline mt-3"></div>
+  </div>
+
+  <!-- Content Row -->
+  <div class="row justify-content-center align-items-stretch gy-4 gx-4">
+
+    <!-- Diya Stage -->
+    <div class="col-md-6 text-center" data-animate>
+      <div class="diya-stage" id="diyaStage">
+
+        <svg id="diyaSvg" class="diya-svg" width="230" height="230" viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <radialGradient id="glowGrad" cx="50%" cy="50%" r="50%">
+              <stop offset="0%"   style="stop-color:#ffcc66; stop-opacity:0.6"/>
+              <stop offset="100%" style="stop-color:#ff6600; stop-opacity:0"/>
+            </radialGradient>
+            <linearGradient id="diyaBase" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%"   style="stop-color:#c86820"/>
+              <stop offset="50%"  style="stop-color:#e08030"/>
+              <stop offset="100%" style="stop-color:#9a4a10"/>
+            </linearGradient>
+            <linearGradient id="diyaBody" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%"   style="stop-color:#e09050"/>
+              <stop offset="100%" style="stop-color:#b86020"/>
+            </linearGradient>
+            <filter id="flameShadow">
+              <feGaussianBlur in="SourceGraphic" stdDeviation="3" result="blur"/>
+              <feColorMatrix type="matrix" values="1 0.5 0 0 0  0 0.3 0 0 0  0 0 0 0 0  0 0 0 0.6 0"/>
+            </filter>
+          </defs>
+
+          <!-- Ambient glow ring (behind diya) -->
+          <circle id="glowRing" cx="120" cy="165" r="70" fill="url(#glowGrad)"/>
+
+          <!-- Diya base ellipse (shadow) -->
+          <ellipse cx="122" cy="175" rx="70" ry="18" fill="rgba(0,0,0,0.35)"/>
+
+          <!-- Diya bowl -->
+          <ellipse cx="120" cy="168" rx="68" ry="22" fill="url(#diyaBase)" stroke="#7a3e12" stroke-width="2"/>
+          <path d="M72 148 Q120 108 168 148 L163 166 Q120 180 77 166 Z" fill="url(#diyaBody)" stroke="#8b4513" stroke-width="2"/>
+          <ellipse cx="120" cy="148" rx="36" ry="13" fill="#e8a870"/>
+
+          <!-- Inner oil pool -->
+          <ellipse cx="120" cy="148" rx="22" ry="8" fill="rgba(255,200,100,0.3)" stroke="rgba(255,180,80,0.4)" stroke-width="1"/>
+
+          <!-- Wick -->
+          <path d="M120 148 Q118 138 120 118 Q122 138 120 148" fill="none" stroke="#2c1a0e" stroke-width="5" stroke-linecap="round"/>
+
+          <!-- Flame Group -->
+          <g id="flameGroup">
+            <!-- Outer warm glow -->
+            <ellipse cx="120" cy="95" rx="30" ry="40" fill="rgba(255,120,0,0.15)"/>
+            <!-- Main flame -->
+            <path d="M120 55 Q133 82 132 100 Q131 114 120 118 Q109 114 108 100 Q107 82 120 55Z"
+                  fill="#ffaa33" stroke="none"/>
+            <!-- Inner bright -->
+            <path d="M120 70 Q128 96 127 104 Q126 111 120 114 Q114 111 113 104 Q112 96 120 70Z"
+                  fill="#ffeeaa"/>
+            <!-- Hotspot -->
+            <ellipse cx="120" cy="82" rx="10" ry="14" fill="white" opacity="0.85"/>
+            <!-- Spark dots -->
+            <circle cx="113" cy="68" r="2" fill="#ffcc66" opacity="0.7"/>
+            <circle cx="128" cy="72" r="1.5" fill="#ffaa33" opacity="0.6"/>
+          </g>
+        </svg>
+
+        <div id="diyaStatus">🪔 दियो बलेको छैन · सलाई तानेर यहाँ ल्याउनुहोस्</div>
+      </div>
+    </div>
+
+    <!-- Matchstick Panel -->
+    <div class="col-md-5" data-animate>
+      <div class="matchstick-panel h-100 d-flex flex-column align-items-center justify-content-center gap-3">
+        <h4 style="font-family:'Yatra One',serif; color:var(--deep-maroon);">
+          <i class="bi bi-fire text-danger"></i>&nbsp; पवित्र सलाई
+        </h4>
+
+        <p class="text-center" style="font-family:'Tiro Devanagari Hindi',serif; color:var(--text-muted); font-size:1rem;">
+          तलको सलाईको छवि समातेर दियोमाथि तान्नुहोस् र समृद्धिको ज्योति प्रज्वलित गर्नुहोस्।
+        </p>
+
+        <!-- Matchstick Image -->
+        <div class="text-center">
+          <img src="images/matchstick.png" alt="सलाई" id="matchstickImg" class="matchstick-img" draggable="true"
+               onerror="this.src='https://cdn-icons-png.flaticon.com/512/181/181546.png'">
+          <div class="touch-hint mt-1">🔥 यो सलाई तान्नुहोस् / drag गर्नुहोस्</div>
+        </div>
+
+        <div id="dragFeedback" class="alert alert-secondary w-100 p-2 text-center small">
+          सलाई समाएर दियोमा छाड्नुहोस्...
+        </div>
+
+        <button id="resetBtn" class="btn btn-outline-secondary rounded-pill px-4">
+          <i class="bi bi-arrow-repeat"></i>&nbsp; दियो निभाउनुहोस्
+        </button>
+
+        <!-- Also allow click-to-light as fallback -->
+        <button id="clickLightBtn" class="btn btn-ceremony rounded-pill px-4 py-2 w-100">
+          <i class="bi bi-brightness-alt-high"></i>&nbsp; क्लिक गरेर दीप प्रज्वलन गर्नुहोस्
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Completion -->
+  <div class="text-center mt-5" data-animate>
+    <div id="completionMessage"></div>
+  </div>
+
+</main>
+
+<footer class="footer text-center py-3 mt-5">
+  <div class="container">
+    <span><i class="bi bi-gem"></i>&nbsp; शुभारंभ समारोह २०२५ | ज्योति सधैं जलिरहोस्</span>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script src="js/main.js"></script>
+<script>
+  let diyaLit = false;
+
+  const matchstickImg  = document.getElementById('matchstickImg');
+  const diyaStage      = document.getElementById('diyaStage');
+  const flameGroup     = document.getElementById('flameGroup');
+  const glowRing       = document.getElementById('glowRing');
+  const diyaStatus     = document.getElementById('diyaStatus');
+  const dragFeedback   = document.getElementById('dragFeedback');
+  const resetBtn       = document.getElementById('resetBtn');
+  const clickLightBtn  = document.getElementById('clickLightBtn');
+  const completionMsg  = document.getElementById('completionMessage');
+
+  function igniteDiya() {
+    if (diyaLit) return;
+    diyaLit = true;
+
+    flameGroup.classList.add('burning');
+    glowRing.classList.add('active');
+    diyaStage.classList.add('lit-glow');
+    diyaStatus.innerHTML = '✨ दीपः प्रज्वलितः ✨ — समृद्धिको ज्योति जल्यो! 🪔';
+    diyaStatus.classList.add('lit');
+    matchstickImg.classList.add('lit');
+
+    dragFeedback.innerHTML = '<i class="bi bi-check-circle-fill text-success"></i>&nbsp; ✨ सलाईले दियोलाई स्पर्श गर्यो! पवित्र ज्योति प्रज्वलित भयो! 🔥';
+    dragFeedback.className = 'alert alert-success w-100 p-2 text-center small';
+
+    completionMsg.innerHTML = '🕯️ समारोह सम्पन्न भयो! तपाईंको जीवनमा सधैं ज्योति रहोस्। 🕯️';
+
+    canvasConfetti({
+      particleCount: 220, spread: 85, origin: { y: 0.6 },
+      colors: ['#ff9933','#ffcc66','#ff6600','#ff3300','#f0c040']
+    });
+
+    sessionStorage.setItem('diyaLit', 'true');
+    clickLightBtn.disabled = true;
+    clickLightBtn.innerHTML = '<i class="bi bi-check-lg"></i>&nbsp; दीप प्रज्वलित भयो!';
+  }
+
+  function extinguishDiya() {
+    diyaLit = false;
+    flameGroup.classList.remove('burning');
+    glowRing.classList.remove('active');
+    diyaStage.classList.remove('lit-glow');
+    diyaStatus.innerHTML = '🪔 दियो बलेको छैन · सलाई तानेर यहाँ ल्याउनुहोस्';
+    diyaStatus.classList.remove('lit');
+    matchstickImg.classList.remove('lit');
+    dragFeedback.innerHTML = 'दियो निभ्यो। सलाई फेरि तानेर पुनः प्रज्वलित गर्नुहोस्।';
+    dragFeedback.className = 'alert alert-secondary w-100 p-2 text-center small';
+    completionMsg.innerHTML = '';
+    sessionStorage.setItem('diyaLit', 'false');
+    clickLightBtn.disabled = false;
+    clickLightBtn.innerHTML = '<i class="bi bi-brightness-alt-high"></i>&nbsp; क्लिक गरेर दीप प्रज्वलन गर्नुहोस्';
+  }
+
+  // ── Drag & Drop ──────────────────────
+  matchstickImg.addEventListener('dragstart', (e) => {
+    if (diyaLit) { e.preventDefault(); return; }
+    e.dataTransfer.setData('text/plain', 'matchstick');
+    e.dataTransfer.effectAllowed = 'copy';
+    matchstickImg.classList.add('dragging');
+    diyaStage.classList.add('drop-active');
+    dragFeedback.innerHTML = '🔥 सलाई समातिएको छ! दियोमाथि छाड्नुहोस्...';
+    dragFeedback.className = 'alert alert-info w-100 p-2 text-center small';
+  });
+
+  matchstickImg.addEventListener('dragend', () => {
+    matchstickImg.classList.remove('dragging');
+    diyaStage.classList.remove('drop-active');
+    if (!diyaLit) {
+      dragFeedback.innerHTML = 'सलाई छाडिएन — फेरि प्रयास गर्नुहोस्।';
+      dragFeedback.className = 'alert alert-secondary w-100 p-2 text-center small';
+    }
+  });
+
+  diyaStage.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'copy';
+  });
+
+  diyaStage.addEventListener('dragleave', () => {
+    diyaStage.classList.remove('drop-active');
+  });
+
+  diyaStage.addEventListener('drop', (e) => {
+    e.preventDefault();
+    diyaStage.classList.remove('drop-active');
+    if (diyaLit) {
+      dragFeedback.innerHTML = '<i class="bi bi-exclamation-triangle"></i>&nbsp; दियो पहिले नै जलेको छ!';
+      dragFeedback.className = 'alert alert-warning w-100 p-2 text-center small';
+      return;
+    }
+    igniteDiya();
+  });
+
+  // ── Touch / Mobile Support ────────────
+  let touchStartX, touchStartY;
+
+  matchstickImg.addEventListener('touchstart', (e) => {
+    if (diyaLit) return;
+    const t = e.touches[0];
+    touchStartX = t.clientX; touchStartY = t.clientY;
+    matchstickImg.classList.add('dragging');
+    dragFeedback.innerHTML = '🔥 सलाई समातिएको छ! दियोतिर सार्नुहोस्...';
+    dragFeedback.className = 'alert alert-info w-100 p-2 text-center small';
+  }, { passive: true });
+
+  matchstickImg.addEventListener('touchmove', (e) => {
+    e.preventDefault();
+    const t = e.touches[0];
+    const el = document.elementFromPoint(t.clientX, t.clientY);
+    if (el && (el === diyaStage || diyaStage.contains(el))) {
+      diyaStage.classList.add('drop-active');
+    } else {
+      diyaStage.classList.remove('drop-active');
+    }
+  }, { passive: false });
+
+  matchstickImg.addEventListener('touchend', (e) => {
+    matchstickImg.classList.remove('dragging');
+    diyaStage.classList.remove('drop-active');
+    const t = e.changedTouches[0];
+    const el = document.elementFromPoint(t.clientX, t.clientY);
+    if (el && (el === diyaStage || diyaStage.contains(el))) {
+      igniteDiya();
+    } else if (!diyaLit) {
+      dragFeedback.innerHTML = 'दियोमा नपुगेको — फेरि प्रयास गर्नुहोस्।';
+      dragFeedback.className = 'alert alert-secondary w-100 p-2 text-center small';
+    }
+  });
+
+  // ── Button fallbacks ──────────────────
+  clickLightBtn.addEventListener('click', igniteDiya);
+  resetBtn.addEventListener('click', extinguishDiya);
+
+  // ── Restore from session ──────────────
+  if (sessionStorage.getItem('diyaLit') === 'true') {
+    igniteDiya();
+  }
+</script>
+</body>
+</html>

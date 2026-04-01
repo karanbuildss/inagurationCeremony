@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="ne">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>शुभारंभ समारोह | रिबन काट्ने</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Yatra+One&family=Tiro+Devanagari+Hindi:ital@0;1&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1"></script>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+
+    .scissor-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+    .scissor-img {
+      width: 78px;
+      height: auto;
+      filter: drop-shadow(0 4px 10px rgba(74,14,14,0.4));
+      transition: transform 0.55s cubic-bezier(0.34,1.56,0.64,1), filter 0.35s;
+    }
+    .scissor-img.cut-left  {
+      transform: rotate(38deg) scale(1.18) translateY(-6px) !important;
+      filter: drop-shadow(0 0 14px #ff6000);
+    }
+    .scissor-img.cut-right {
+      transform: rotate(-38deg) scale(1.18) translateY(-6px) !important;
+      filter: drop-shadow(0 0 14px #ff6000);
+    }
+
+    /* Snip spark flash */
+    @keyframes snipFlash {
+      0%   { opacity: 0; transform: translate(-50%,-50%) scale(0.4) rotate(0deg); }
+      45%  { opacity: 1; transform: translate(-50%,-50%) scale(1.4) rotate(20deg); }
+      100% { opacity: 0; transform: translate(-50%,-50%) scale(0.9) rotate(45deg); }
+    }
+    #snipSpark {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%,-50%);
+      pointer-events: none;
+      opacity: 0;
+      z-index: 10;
+    }
+    #snipSpark.active { animation: snipFlash 0.65s ease forwards; }
+
+    /* Curtain */
+    .curtain-overlay { position:fixed; inset:0; z-index:9999; display:flex; pointer-events:none; }
+    .curtain-panel   { position:absolute; width:50%; height:100%; top:0;
+                       background:linear-gradient(160deg,#6a1a0a 0%,#3a0d05 100%);
+                       transition:transform 1.3s cubic-bezier(0.77,0,0.18,1); }
+    .curtain-left  { left:0; }
+    .curtain-right { right:0; }
+    .curtain-left.slide  { transform:translateX(-100%); }
+    .curtain-right.slide { transform:translateX(100%); }
+
+    .ribbon-label {
+      font-family: 'Tiro Devanagari Hindi', serif;
+      color: var(--text-muted);
+      font-size: 0.82rem;
+      font-style: italic;
+      margin-top: 6px;
+      text-align: center;
+    }
+
+    #ribbonScene {
+      position: relative;
+      display: inline-block;
+      line-height: 0;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg sticky-top">
+  <div class="container">
+    <a class="navbar-brand" href="index.html">
+      <i class="bi bi-brightness-alt-high"></i> शुभारंभ समारोह
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item">
+          <a class="nav-link active" href="index.html"><i class="bi bi-scissors"></i> रिबन काट्ने</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="sponsor.html"><i class="bi bi-trophy-fill"></i> प्रायोजकहरू</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="diyo.html"><i class="bi bi-brightness-alt-high"></i> दीप प्रज्वलन</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Main -->
+<main class="container py-5">
+  <div class="hero-ribbon text-center">
+
+    <div class="deco-symbol mb-2">🪔</div>
+    <div class="ornament-divider">
+      <span style="font-size:1.2rem;color:var(--gold);">✦ ✦ ✦</span>
+    </div>
+
+    <h1 class="ceremony-title mb-2" data-animate>भव्य शुभारंभ समारोह</h1>
+    <p class="ceremony-subtitle mt-2" data-animate>
+      नयाँ सुरुवातको पवित्र उत्सव — परम्परा र उल्लाससँगै
+    </p>
+    <div class="gold-underline mt-3 mb-5"></div>
+
+    <!-- Ribbon Card -->
+    <div class="ribbon-card mx-auto" style="max-width:860px;" data-animate>
+      <p class="mb-4" style="font-family:'Tiro Devanagari Hindi',serif;font-size:1.1rem;color:var(--text-muted);">
+        <i class="bi bi-scissors text-danger"></i>&nbsp;
+        तलको पवित्र रिबन काटेर समारोहको विधिवत् उद्घाटन गर्नुहोस्
+      </p>
+
+      <!-- ── Ribbon + Scissors Row ── -->
+      <div class="d-flex justify-content-center align-items-center gap-3 flex-wrap my-4 py-2">
+
+        <!-- Left Scissor -->
+        <div class="scissor-wrap">
+          <img src="images/scissors.png" alt="कैंची" class="scissor-img" id="leftScissor"
+               onerror="this.src='https://cdn-icons-png.flaticon.com/512/107/107804.png'">
+          <small class="ribbon-label">बायाँ</small>
+        </div>
+
+        <!-- Ribbon scene -->
+        <div>
+          <div id="ribbonScene">
+
+            <!--
+              REALISTIC RIBBON SVG
+              viewBox 0 0 560 200
+              Ribbon band: y=80 to y=124 (height=44), centred at y=102
+              Bows sit at x≈155 (left) and x≈405 (right), knot at x=280
+            -->
+            <svg id="ribbonFull" width="430" height="175"
+                 viewBox="0 0 560 200" xmlns="http://www.w3.org/2000/svg"
+                 style="display:block; overflow:visible;">
+              <defs>
+                <!-- ── Ribbon fabric ── sheen from top-left -->
+                <linearGradient id="rfTop" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%"   stop-color="#f06060"/>
+                  <stop offset="18%"  stop-color="#d42020"/>
+                  <stop offset="50%"  stop-color="#9c1010"/>
+                  <stop offset="82%"  stop-color="#d42020"/>
+                  <stop offset="100%" stop-color="#e85050"/>
+                </linearGradient>
+                <!-- subtle horizontal sheen sweep -->
+                <linearGradient id="rfSweep" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%"   stop-color="white" stop-opacity="0.04"/>
+                  <stop offset="30%"  stop-color="white" stop-opacity="0.13"/>
+                  <stop offset="50%"  stop-color="white" stop-opacity="0.06"/>
+                  <stop offset="100%" stop-color="white" stop-opacity="0.03"/>
+                </linearGradient>
+                <!-- top highlight stripe -->
+                <linearGradient id="rfHL" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%"   stop-color="white" stop-opacity="0.28"/>
+                  <stop offset="100%" stop-color="white" stop-opacity="0"/>
+                </linearGradient>
+
+                <!-- ── Bow fabric (same red, slightly different sheen angle) ── -->
+                <linearGradient id="bowFab" x1="15%" y1="0%" x2="85%" y2="100%">
+                  <stop offset="0%"   stop-color="#e84040"/>
+                  <stop offset="40%"  stop-color="#a81212"/>
+                  <stop offset="100%" stop-color="#cc2828"/>
+                </linearGradient>
+                <linearGradient id="bowFabDark" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%"   stop-color="#be1a1a"/>
+                  <stop offset="100%" stop-color="#8a0c0c"/>
+                </linearGradient>
+                <linearGradient id="bowHL" x1="10%" y1="0%" x2="60%" y2="100%">
+                  <stop offset="0%"   stop-color="white" stop-opacity="0.22"/>
+                  <stop offset="100%" stop-color="white" stop-opacity="0"/>
+                </linearGradient>
+
+                <!-- ── Gold knot ── -->
+                <radialGradient id="gKnot" cx="38%" cy="28%" r="65%">
+                  <stop offset="0%"   stop-color="#ffe57a"/>
+                  <stop offset="40%"  stop-color="#c8920a"/>
+                  <stop offset="100%" stop-color="#7a4e00"/>
+                </radialGradient>
+                <radialGradient id="gKnotHL" cx="30%" cy="20%" r="55%">
+                  <stop offset="0%"   stop-color="white" stop-opacity="0.38"/>
+                  <stop offset="100%" stop-color="white" stop-opacity="0"/>
+                </radialGradient>
+
+                <!-- ── Shadows / filters ── -->
+                <filter id="ribbonDrop" x="-5%" y="-20%" width="110%" height="160%">
+                  <feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#5a0505" flood-opacity="0.5"/>
+                </filter>
+                <filter id="bowDrop" x="-15%" y="-20%" width="130%" height="160%">
+                  <feDropShadow dx="1" dy="5" stdDeviation="5" flood-color="#5a0505" flood-opacity="0.45"/>
+                </filter>
+                <filter id="knotDrop" x="-30%" y="-30%" width="160%" height="160%">
+                  <feDropShadow dx="0" dy="4" stdDeviation="5" flood-color="#6a3a00" flood-opacity="0.55"/>
+                </filter>
+
+                <!-- clip to keep ribbon body tidy -->
+                <clipPath id="bandClip">
+                  <rect x="48" y="79" width="464" height="46" rx="2"/>
+                </clipPath>
+              </defs>
+
+              <!-- ═══════════════════════════════════════
+                   RIBBON BAND
+              ═══════════════════════════════════════ -->
+              <!-- Cast shadow below band -->
+              <rect x="52" y="116" width="456" height="10" rx="5"
+                    fill="#4a0505" opacity="0.30" filter="url(#ribbonDrop)"/>
+
+              <!-- Main band body -->
+              <rect id="ribbonPath" x="50" y="80" width="460" height="44" rx="4"
+                    fill="url(#rfTop)" filter="url(#ribbonDrop)"/>
+
+              <!-- Horizontal sweep sheen -->
+              <rect x="50" y="80" width="460" height="44" rx="4" fill="url(#rfSweep)" clip-path="url(#bandClip)"/>
+
+              <!-- Top-edge highlight (silk sheen) -->
+              <rect x="50" y="80" width="460" height="18" rx="4" fill="url(#rfHL)" clip-path="url(#bandClip)"/>
+
+              <!-- Woven texture lines -->
+              <line x1="52" y1="91"  x2="508" y2="91"  stroke="rgba(255,255,255,0.07)" stroke-width="1"/>
+              <line x1="52" y1="102" x2="508" y2="102" stroke="rgba(0,0,0,0.14)"       stroke-width="1.2"/>
+              <line x1="52" y1="113" x2="508" y2="113" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+
+              <!-- Left cut end stitch -->
+              <rect x="50" y="80" width="6" height="44" rx="2" fill="#7a0808" opacity="0.65"/>
+              <!-- Right cut end stitch -->
+              <rect x="504" y="80" width="6" height="44" rx="2" fill="#7a0808" opacity="0.65"/>
+
+
+              <!-- ═══════════════════════════════════════
+                   LEFT BOW  (centred at x=158, y=102)
+              ═══════════════════════════════════════ -->
+              <g id="leftBow" transform="translate(158,102)" filter="url(#bowDrop)">
+
+                <!-- Tail hanging down-left -->
+                <path d="M-3,8 Q-40,55 -75,80 Q-80,85 -82,82 Q-78,75 -40,50 Q-10,30 -2,10Z"
+                      fill="url(#bowFabDark)" stroke="#7a0808" stroke-width="0.8"/>
+                <!-- Tail crease -->
+                <path d="M-10,20 Q-48,60 -76,80" stroke="#6a0606" stroke-width="1" fill="none" stroke-linecap="round"/>
+
+                <!-- Upper loop -->
+                <path d="M0,0
+                         C -12,-28 -55,-55 -80,-38
+                         C -100,-24 -90,0 -70,6
+                         C -45,14 -18,4 0,0 Z"
+                      fill="url(#bowFab)" stroke="#8a0c0c" stroke-width="1"/>
+                <path d="M0,0 C -12,-28 -55,-55 -80,-38 C -100,-24 -90,0 -70,6 C -45,14 -18,4 0,0 Z"
+                      fill="url(#bowHL)"/>
+                <!-- Upper loop crease -->
+                <path d="M-8,-4 Q-45,-30 -74,-30" stroke="#8a0808" stroke-width="1.2" fill="none"
+                      stroke-linecap="round" opacity="0.6"/>
+
+                <!-- Lower loop -->
+                <path d="M0,0
+                         C -12,28 -55,55 -80,38
+                         C -100,24 -90,0 -70,-6
+                         C -45,-14 -18,-4 0,0 Z"
+                      fill="url(#bowFab)" stroke="#8a0c0c" stroke-width="1"/>
+                <path d="M0,0 C -12,28 -55,55 -80,38 C -100,24 -90,0 -70,-6 C -45,-14 -18,-4 0,0 Z"
+                      fill="url(#bowHL)"/>
+                <!-- Lower loop crease -->
+                <path d="M-8,4 Q-45,30 -74,30" stroke="#8a0808" stroke-width="1.2" fill="none"
+                      stroke-linecap="round" opacity="0.6"/>
+
+                <!-- Centre gather / pinch -->
+                <ellipse cx="-4" cy="0" rx="8" ry="10" fill="#a81010" stroke="#7a0808" stroke-width="1"/>
+              </g>
+
+
+              <!-- ═══════════════════════════════════════
+                   RIGHT BOW  (centred at x=402, y=102)
+              ═══════════════════════════════════════ -->
+              <g id="rightBow" transform="translate(402,102)" filter="url(#bowDrop)">
+
+                <!-- Tail hanging down-right -->
+                <path d="M3,8 Q40,55 75,80 Q80,85 82,82 Q78,75 40,50 Q10,30 2,10Z"
+                      fill="url(#bowFabDark)" stroke="#7a0808" stroke-width="0.8"/>
+                <path d="M10,20 Q48,60 76,80" stroke="#6a0606" stroke-width="1" fill="none" stroke-linecap="round"/>
+
+                <!-- Upper loop -->
+                <path d="M0,0
+                         C 12,-28 55,-55 80,-38
+                         C 100,-24 90,0 70,6
+                         C 45,14 18,4 0,0 Z"
+                      fill="url(#bowFab)" stroke="#8a0c0c" stroke-width="1"/>
+                <path d="M0,0 C 12,-28 55,-55 80,-38 C 100,-24 90,0 70,6 C 45,14 18,4 0,0 Z"
+                      fill="url(#bowHL)"/>
+                <path d="M8,-4 Q45,-30 74,-30" stroke="#8a0808" stroke-width="1.2" fill="none"
+                      stroke-linecap="round" opacity="0.6"/>
+
+                <!-- Lower loop -->
+                <path d="M0,0
+                         C 12,28 55,55 80,38
+                         C 100,24 90,0 70,-6
+                         C 45,-14 18,-4 0,0 Z"
+                      fill="url(#bowFab)" stroke="#8a0c0c" stroke-width="1"/>
+                <path d="M0,0 C 12,28 55,55 80,38 C 100,24 90,0 70,-6 C 45,-14 18,-4 0,0 Z"
+                      fill="url(#bowHL)"/>
+                <path d="M8,4 Q45,30 74,30" stroke="#8a0808" stroke-width="1.2" fill="none"
+                      stroke-linecap="round" opacity="0.6"/>
+
+                <!-- Centre gather / pinch -->
+                <ellipse cx="4" cy="0" rx="8" ry="10" fill="#a81010" stroke="#7a0808" stroke-width="1"/>
+              </g>
+
+
+              <!-- ═══════════════════════════════════════
+                   CENTRAL GOLD KNOT  (x=280, y=102)
+              ═══════════════════════════════════════ -->
+              <g transform="translate(280,102)" filter="url(#knotDrop)">
+                <!-- Main knot body -->
+                <ellipse cx="0" cy="0" rx="30" ry="26" fill="url(#gKnot)" stroke="#7a4a00" stroke-width="1.5"/>
+                <!-- Sheen -->
+                <ellipse cx="0" cy="0" rx="30" ry="26" fill="url(#gKnotHL)"/>
+                <!-- Crease / fold lines -->
+                <path d="M-14,-8 Q0,-1 14,-8"  stroke="#9a6a00" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+                <path d="M-14, 8 Q0, 1 14, 8"  stroke="#9a6a00" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+                <path d="M-6,-14 Q0,0 -6,14"   stroke="rgba(154,106,0,0.4)" stroke-width="1" fill="none"/>
+                <path d="M 6,-14 Q0,0  6,14"   stroke="rgba(154,106,0,0.4)" stroke-width="1" fill="none"/>
+                <!-- Centre gem -->
+                <circle cx="0" cy="0" r="7" fill="#c8920a" stroke="#ffe066" stroke-width="1.2"/>
+                <circle cx="-2" cy="-2" r="2.5" fill="rgba(255,240,180,0.7)"/>
+              </g>
+
+              <!-- Label -->
+              <text x="280" y="188" text-anchor="middle"
+                    fill="#6b3010" font-size="13"
+                    font-family="'Tiro Devanagari Hindi',serif"
+                    font-style="italic" opacity="0.72">
+                पवित्र शुभारंभ रिबन
+              </text>
+            </svg>
+
+            <!-- Snip spark (absolutely positioned at centre) -->
+            <svg id="snipSpark" width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="32" cy="32" r="24" fill="rgba(255,160,0,0.15)" stroke="#ffaa00" stroke-width="2"/>
+              <line x1="32" y1="6"  x2="32" y2="58" stroke="#ff7700" stroke-width="2.5" stroke-linecap="round"/>
+              <line x1="6"  y1="32" x2="58" y2="32" stroke="#ff7700" stroke-width="2.5" stroke-linecap="round"/>
+              <line x1="13" y1="13" x2="51" y2="51" stroke="#ffcc44" stroke-width="2"   stroke-linecap="round"/>
+              <line x1="51" y1="13" x2="13" y2="51" stroke="#ffcc44" stroke-width="2"   stroke-linecap="round"/>
+            </svg>
+
+          </div><!-- /ribbonScene -->
+          <div class="ribbon-label">✦ पवित्र रिबन ✦</div>
+        </div>
+
+        <!-- Right Scissor -->
+        <div class="scissor-wrap">
+          <img src="images/scissors.png" alt="कैंची" class="scissor-img" id="rightScissor"
+               onerror="this.src='https://cdn-icons-png.flaticon.com/512/107/107804.png'">
+          <small class="ribbon-label">दायाँ</small>
+        </div>
+      </div><!-- /flex row -->
+
+      <!-- Cut Button -->
+      <button id="cutRibbonBtn" class="btn btn-ceremony btn-lg rounded-pill px-5 py-3 mt-2">
+        <i class="bi bi-scissors"></i>&nbsp; पवित्र रिबन काट्नुहोस्
+      </button>
+
+      <!-- Message -->
+      <div id="ribbonMessage" class="mt-4"></div>
+    </div><!-- /ribbon-card -->
+
+    <!-- Info -->
+    <div class="alert alert-info mt-4 mx-auto" style="max-width:520px;font-size:1rem;" data-animate>
+      <i class="bi bi-info-circle-fill"></i>&nbsp;
+      रिबन काटेपछि तपाईं स्वचालित रूपमा <strong>प्रायोजक पृष्ठमा</strong> पुनः निर्देशित हुनुहुनेछ।
+    </div>
+  </div>
+</main>
+
+<footer class="footer text-center py-3 mt-5">
+  <div class="container">
+    <span><i class="bi bi-gem"></i>&nbsp; शुभारंभ समारोह २०२५ | समृद्धि र नयाँ सुरुवातको कामना</span>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script src="js/main.js"></script>
+<script>
+  let ribbonCut = false;
+
+  function cutRibbon() {
+    if (ribbonCut) return;
+    ribbonCut = true;
+
+    const leftScissor  = document.getElementById('leftScissor');
+    const rightScissor = document.getElementById('rightScissor');
+    const ribbonFull   = document.getElementById('ribbonFull');
+    const snipSpark    = document.getElementById('snipSpark');
+    const msgDiv       = document.getElementById('ribbonMessage');
+    const cutBtn       = document.getElementById('cutRibbonBtn');
+
+    // 1 — Scissors snap
+    leftScissor.classList.add('cut-left');
+    rightScissor.classList.add('cut-right');
+
+    // 2 — Spark flash at knot
+    setTimeout(() => snipSpark.classList.add('active'), 220);
+
+    // 3 — Split ribbon into two halves
+    setTimeout(() => splitRibbonVisual(ribbonFull), 380);
+
+    // 4 — Message
+    setTimeout(() => {
+      msgDiv.innerHTML = `
+        <div class="alert alert-success fade show fs-5">
+          <i class="bi bi-check-circle-fill"></i>&nbsp;
+          ✂️ पवित्र रिबन काटियो! समारोहको विधिवत् उद्घाटन भयो! 🎉
+        </div>`;
+    }, 520);
+
+    // 5 — Disable button
+    cutBtn.disabled = true;
+    cutBtn.innerHTML = '<i class="bi bi-check-lg"></i>&nbsp; रिबन काटिसकियो!';
+
+    // 6 — Confetti
+    setTimeout(() => {
+      canvasConfetti({ particleCount: 300, spread: 115, origin: { y: 0.55 },
+        colors: ['#e67e22','#f1c40f','#c0392b','#d35400','#c8982a','#fff','#ffeeaa'] });
+    }, 420);
+
+    sessionStorage.setItem('ribbonCut', 'true');
+
+    // 7 — Curtain + redirect
+    setTimeout(createCurtain, 900);
+    setTimeout(() => { window.location.href = 'sponsor.html'; }, 2500);
+  }
+
+  function splitRibbonVisual(fullSvg) {
+    if (!fullSvg) return;
+    const scene = document.getElementById('ribbonScene');
+    const svgNS = 'http://www.w3.org/2000/svg';
+    const VBW   = 560; // viewBox width
+    const VBH   = 200;
+    const W     = fullSvg.getAttribute('width');
+    const H     = fullSvg.getAttribute('height');
+    const vb    = fullSvg.getAttribute('viewBox');
+
+    function cloneHalf(clipX, clipWidth, id) {
+      const clone = fullSvg.cloneNode(true);
+      clone.setAttribute('id', id);
+      clone.style.position   = 'absolute';
+      clone.style.top        = '0';
+      clone.style.left       = '0';
+      clone.style.transition = 'transform 0.85s cubic-bezier(0.77,0,0.18,1), opacity 0.85s ease';
+      clone.removeAttribute('style'); // re-apply cleanly
+      clone.style.cssText = 'position:absolute;top:0;left:0;display:block;overflow:visible;transition:transform 0.85s cubic-bezier(0.77,0,0.18,1),opacity 0.85s ease;';
+
+      // Add a clipPath inside defs
+      const defs = clone.querySelector('defs');
+      const cp   = document.createElementNS(svgNS, 'clipPath');
+      cp.setAttribute('id', 'hc_' + id);
+      const r = document.createElementNS(svgNS, 'rect');
+      r.setAttribute('x',      clipX);
+      r.setAttribute('y',      '0');
+      r.setAttribute('width',  clipWidth);
+      r.setAttribute('height', VBH);
+      cp.appendChild(r);
+      defs.appendChild(cp);
+
+      // Wrap all non-defs children in a clipped <g>
+      const g = document.createElementNS(svgNS, 'g');
+      g.setAttribute('clip-path', 'url(#hc_' + id + ')');
+      const children = [...clone.children].filter(c => c.tagName.toLowerCase() !== 'defs');
+      children.forEach(c => g.appendChild(c));
+      clone.appendChild(g);
+
+      return clone;
+    }
+
+    const leftHalf  = cloneHalf(0,   280, 'halfL');
+    const rightHalf = cloneHalf(280, 280, 'halfR');
+
+    // Hide original
+    fullSvg.style.opacity = '0';
+
+    scene.appendChild(leftHalf);
+    scene.appendChild(rightHalf);
+
+    // Trigger animation next frame
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      leftHalf.style.transform  = 'translateX(-65px) translateY(26px) rotate(-7deg)';
+      leftHalf.style.opacity    = '0.28';
+      rightHalf.style.transform = 'translateX(65px) translateY(26px) rotate(7deg)';
+      rightHalf.style.opacity   = '0.28';
+    }));
+  }
+
+  function createCurtain() {
+    const overlay = document.createElement('div');
+    overlay.className = 'curtain-overlay';
+    overlay.innerHTML = '<div class="curtain-panel curtain-left"></div><div class="curtain-panel curtain-right"></div>';
+    document.body.appendChild(overlay);
+    setTimeout(() => {
+      overlay.querySelector('.curtain-left').classList.add('slide');
+      overlay.querySelector('.curtain-right').classList.add('slide');
+    }, 50);
+    setTimeout(() => overlay.remove(), 1400);
+  }
+
+  document.getElementById('cutRibbonBtn').addEventListener('click', cutRibbon);
+
+  // Restore state
+  if (sessionStorage.getItem('ribbonCut') === 'true') {
+    ribbonCut = true;
+    const btn = document.getElementById('cutRibbonBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="bi bi-check-lg"></i>&nbsp; रिबन काटिसकियो!';
+    const rf = document.getElementById('ribbonFull');
+    if (rf) { rf.style.opacity = '0.35'; rf.style.filter = 'grayscale(0.5)'; }
+    document.getElementById('ribbonMessage').innerHTML =
+      '<div class="alert alert-success fs-5"><i class="bi bi-check-circle-fill"></i>&nbsp; रिबन पहिले नै काटिसकिएको छ! समारोह जारी छ।</div>';
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,370 @@
+/* ===================================
+   NEPALI INAUGURATION CEREMONY
+   Sacred & Ceremonial Design System
+   =================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Yatra+One&family=Tiro+Devanagari+Hindi:ital@0;1&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap');
+
+/* ── CSS Variables ─────────────────── */
+:root {
+  --deep-maroon: #4a0e0e;
+  --rich-crimson: #8b1a1a;
+  --bright-red: #c0392b;
+  --gold: #c8982a;
+  --gold-light: #f0c040;
+  --gold-pale: #fef3c0;
+  --cream: #fdf6e3;
+  --warm-white: #fffbf0;
+  --dark-brown: #2c1005;
+  --text-dark: #1a0808;
+  --text-muted: #6b4c3b;
+  --border-gold: #c8982a;
+  --shadow-warm: rgba(74, 14, 14, 0.25);
+  --shadow-gold: rgba(200, 152, 42, 0.35);
+}
+
+/* ── Base Reset ────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Crimson Pro', 'Tiro Devanagari Hindi', Georgia, serif;
+  background-color: var(--cream);
+  color: var(--text-dark);
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* ── Background Pattern ────────────── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    radial-gradient(circle at 20% 20%, rgba(200,152,42,0.07) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(139,26,26,0.07) 0%, transparent 50%),
+    url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23c8982a' fill-opacity='0.04'%3E%3Cpath d='M30 0 L36 24 L60 30 L36 36 L30 60 L24 36 L0 30 L24 24Z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 0;
+}
+
+body > * { position: relative; z-index: 1; }
+
+/* ── Decorative Border Frame ───────── */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 8px;
+  border: 2px solid rgba(200,152,42,0.25);
+  pointer-events: none;
+  z-index: 9998;
+}
+
+/* ── Navbar ────────────────────────── */
+.navbar {
+  background: linear-gradient(135deg, var(--deep-maroon) 0%, var(--rich-crimson) 100%) !important;
+  border-bottom: 3px solid var(--gold);
+  padding: 0.85rem 0;
+  box-shadow: 0 4px 20px var(--shadow-warm);
+}
+
+.navbar-brand {
+  font-family: 'Yatra One', serif;
+  font-size: 1.35rem;
+  color: var(--gold-light) !important;
+  letter-spacing: 0.04em;
+  text-shadow: 0 0 12px rgba(240,192,64,0.4);
+}
+
+.navbar-brand i { margin-right: 6px; color: var(--gold-light); }
+
+.nav-link {
+  font-family: 'Crimson Pro', serif;
+  font-size: 1.05rem;
+  color: rgba(255,240,200,0.85) !important;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  padding: 0.4rem 1rem !important;
+  border-radius: 20px;
+  transition: all 0.25s ease;
+  position: relative;
+}
+
+.nav-link:hover,
+.nav-link.active {
+  color: var(--gold-light) !important;
+  background: rgba(200,152,42,0.18);
+}
+
+.nav-link.active::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60%;
+  height: 2px;
+  background: var(--gold-light);
+  border-radius: 2px;
+}
+
+.navbar-toggler { border-color: rgba(200,152,42,0.5); }
+.navbar-toggler-icon { filter: invert(1); }
+
+/* ── Hero Section ──────────────────── */
+.hero-ribbon { padding: 2rem 0; }
+
+.ceremony-title {
+  font-family: 'Yatra One', serif;
+  color: var(--deep-maroon);
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  text-shadow: 2px 2px 0 rgba(200,152,42,0.2);
+  letter-spacing: 0.02em;
+  line-height: 1.2;
+}
+
+.ceremony-subtitle {
+  font-family: 'Tiro Devanagari Hindi', serif;
+  color: var(--text-muted);
+  font-size: 1.25rem;
+  font-style: italic;
+}
+
+/* ── Gold Ornamental Divider ───────── */
+.gold-underline {
+  width: 120px;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, var(--gold), var(--gold-light), var(--gold), transparent);
+  margin: 1rem auto;
+  border-radius: 2px;
+}
+
+.ornament-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  justify-content: center;
+  margin: 1.5rem 0;
+  color: var(--gold);
+}
+
+.ornament-divider::before,
+.ornament-divider::after {
+  content: '';
+  flex: 1;
+  max-width: 120px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold));
+}
+
+.ornament-divider::after {
+  background: linear-gradient(90deg, var(--gold), transparent);
+}
+
+/* ── Btn Ceremony ──────────────────── */
+.btn-ceremony {
+  background: linear-gradient(135deg, var(--bright-red) 0%, var(--deep-maroon) 100%);
+  color: var(--gold-light);
+  border: 2px solid var(--gold);
+  font-family: 'Yatra One', serif;
+  font-size: 1.15rem;
+  letter-spacing: 0.05em;
+  box-shadow: 0 6px 25px var(--shadow-warm), inset 0 1px 0 rgba(255,255,255,0.1);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-ceremony::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(240,192,64,0.15) 0%, transparent 100%);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.btn-ceremony:hover {
+  color: #fff;
+  border-color: var(--gold-light);
+  box-shadow: 0 8px 35px var(--shadow-warm), 0 0 20px var(--shadow-gold);
+  transform: translateY(-2px);
+}
+
+.btn-ceremony:hover::before { opacity: 1; }
+
+.btn-ceremony:disabled {
+  background: linear-gradient(135deg, #888 0%, #555 100%);
+  border-color: #aaa;
+  color: #ddd;
+  transform: none;
+  box-shadow: none;
+}
+
+/* ── Ribbon Section Card ───────────── */
+.ribbon-card {
+  background: var(--warm-white);
+  border: 1px solid rgba(200,152,42,0.3);
+  border-radius: 20px;
+  box-shadow: 0 12px 40px var(--shadow-warm);
+  padding: 2.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.ribbon-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--deep-maroon), var(--gold), var(--bright-red), var(--gold), var(--deep-maroon));
+}
+
+/* ── Sponsor Cards ─────────────────── */
+.sponsor-card {
+  background: var(--warm-white);
+  border: 1px solid rgba(200,152,42,0.25);
+  border-radius: 18px;
+  box-shadow: 0 6px 25px rgba(74,14,14,0.12);
+  transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  overflow: hidden;
+  position: relative;
+}
+
+.sponsor-card::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--deep-maroon), var(--gold), var(--bright-red));
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
+}
+
+.sponsor-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 50px var(--shadow-warm);
+  border-color: var(--gold);
+}
+
+.sponsor-card:hover::after { transform: scaleX(1); }
+
+.tier-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, var(--deep-maroon), var(--bright-red));
+  color: var(--gold-light);
+  font-family: 'Crimson Pro', serif;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 4px 14px;
+  border-radius: 20px;
+  border: 1px solid var(--gold);
+}
+
+/* ── Diya Section ──────────────────── */
+.diya-container {
+  background: radial-gradient(ellipse at center top, #3d1a06 0%, #1a0a02 60%, #0d0502 100%);
+  border: 2px solid rgba(200,152,42,0.3);
+  border-radius: 24px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5), inset 0 1px 0 rgba(200,152,42,0.2);
+  transition: all 0.4s ease;
+}
+
+.diya-container.lit-glow {
+  box-shadow: 0 20px 60px rgba(255,120,0,0.4), 0 0 80px rgba(255,80,0,0.2), inset 0 1px 0 rgba(200,152,42,0.3);
+}
+
+.matchstick-panel {
+  background: var(--warm-white);
+  border: 1px solid rgba(200,152,42,0.3);
+  border-radius: 18px;
+  box-shadow: 0 8px 30px var(--shadow-warm);
+}
+
+.matchstick-panel h4 {
+  font-family: 'Yatra One', serif;
+  color: var(--deep-maroon);
+}
+
+/* ── Alert Styling ─────────────────── */
+.alert-success {
+  background: linear-gradient(135deg, rgba(39,174,96,0.12), rgba(39,174,96,0.08));
+  border-color: #27ae60;
+  color: #1a6b3a;
+  font-family: 'Crimson Pro', serif;
+  font-size: 1.05rem;
+  border-radius: 12px;
+}
+
+.alert-info {
+  background: linear-gradient(135deg, rgba(52,152,219,0.1), rgba(52,152,219,0.06));
+  border-color: #3498db;
+  color: #1a527a;
+  border-radius: 12px;
+  font-family: 'Crimson Pro', serif;
+}
+
+.alert-warning {
+  background: linear-gradient(135deg, rgba(200,152,42,0.12), rgba(200,152,42,0.07));
+  border-color: var(--gold);
+  color: var(--dark-brown);
+  border-radius: 12px;
+  font-family: 'Crimson Pro', serif;
+}
+
+.alert-secondary {
+  background: rgba(108,117,125,0.08);
+  border-color: rgba(108,117,125,0.3);
+  border-radius: 12px;
+  font-family: 'Crimson Pro', serif;
+}
+
+/* ── Footer ────────────────────────── */
+.footer {
+  background: linear-gradient(135deg, var(--deep-maroon), var(--dark-brown));
+  color: rgba(240,192,64,0.85);
+  font-family: 'Crimson Pro', serif;
+  font-size: 0.95rem;
+  letter-spacing: 0.04em;
+  border-top: 2px solid var(--gold);
+  margin-top: auto;
+}
+
+/* ── Scroll Entrance Animations ────── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.animate-up {
+  animation: fadeUp 0.7s ease forwards;
+}
+
+/* ── Decorative Om / Flower ─────────── */
+.deco-symbol {
+  font-size: 3rem;
+  color: var(--gold);
+  text-shadow: 0 0 20px rgba(200,152,42,0.5);
+  animation: pulseGold 3s ease-in-out infinite;
+}
+
+@keyframes pulseGold {
+  0%,100% { text-shadow: 0 0 15px rgba(200,152,42,0.4); transform: scale(1); }
+  50%      { text-shadow: 0 0 30px rgba(200,152,42,0.7); transform: scale(1.05); }
+}
+
+/* ── Responsive ─────────────────────── */
+@media (max-width: 768px) {
+  .ceremony-title { font-size: 1.8rem; }
+  .ribbon-card { padding: 1.5rem; }
+  body::after { display: none; }
+}
